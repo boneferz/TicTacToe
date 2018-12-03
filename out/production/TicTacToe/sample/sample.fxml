@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#clickListener" prefHeight="310.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <Pane prefHeight="310.0" prefWidth="240.0" style="-fx-background-color: #64537e;">
+         <children>
+            <Group layoutX="66.0" layoutY="256.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="59.0" text="you:" textFill="#c6b0e8">
+                     <font>
+                        <Font name="Aldo the Apache" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="youText" layoutX="65.0" prefHeight="18.0" prefWidth="59.0" text="3" textFill="#c6b0e8">
+                     <font>
+                        <Font name="Aldo the Apache" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="pcText" layoutX="65.0" layoutY="22.0" prefHeight="18.0" prefWidth="59.0" text="0" textFill="#a98dd3">
+                     <font>
+                        <Font name="Aldo the Apache" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER_RIGHT" layoutY="22.0" prefHeight="18.0" prefWidth="59.0" text="PC:" textFill="#a98dd3">
+                     <font>
+                        <Font name="Aldo the Apache" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Group>
+            <Label fx:id="textInfo" alignment="CENTER" layoutX="-4.0" layoutY="14.0" prefHeight="18.0" prefWidth="256.0" text="press start" textFill="WHITE">
+               <font>
+                  <Font name="Aldo the Apache" size="20.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="grid" layoutX="25.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/grid.png" />
+               </image></ImageView>
+            <ImageView fx:id="box_1" layoutX="34.0" layoutY="58.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_2" layoutX="98.0" layoutY="58.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <viewport>
+                  <Rectangle2D height="45.0" width="45.0" />
+               </viewport>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_3" layoutX="164.0" layoutY="58.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_4" layoutX="33.0" layoutY="123.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_5" layoutX="97.0" layoutY="123.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <viewport>
+                  <Rectangle2D height="45.0" width="45.0" />
+               </viewport>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_6" layoutX="163.0" layoutY="123.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_7" layoutX="34.0" layoutY="186.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_8" layoutX="98.0" layoutY="186.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <viewport>
+                  <Rectangle2D height="45.0" width="45.0" />
+               </viewport>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_9" layoutX="164.0" layoutY="186.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+         </children>
+      </Pane>
+      <Pane layoutX="240.0" prefHeight="310.0" prefWidth="170.0" style="-fx-background-color: #ffe1d1;">
+         <children>
+            <Label alignment="CENTER" layoutX="31.0" layoutY="127.0" prefHeight="17.0" prefWidth="108.0" text="difficulty:" textFill="#352e43">
+               <font>
+                  <Font name="Aldo the Apache" size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="ease" layoutX="62.0" layoutY="159.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" prefHeight="17.0" prefWidth="108.0" text="EASE" textFill="#352e43">
+               <font>
+                  <Font name="Aldo the Apache" size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <Label fx:id="medium" layoutX="62.0" layoutY="184.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" prefHeight="17.0" prefWidth="108.0" text="MEDIUM" textFill="#352e43">
+               <font>
+                  <Font name="Aldo the Apache" size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <Label fx:id="hard" layoutX="62.0" layoutY="210.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" prefHeight="17.0" prefWidth="108.0" text="HARD" textFill="#352e43">
+               <font>
+                  <Font name="Aldo the Apache" size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <ImageView fx:id="easeBox" layoutX="30.0" layoutY="158.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/checkBox.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="mediumBox" layoutX="30.0" layoutY="183.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/checkBox.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="hardBox" layoutX="30.0" layoutY="208.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/checkBox.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="difficultyCheckPoint" disable="true" layoutX="37.0" layoutY="165.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/checkIt.png" />
+               </image>
+            </ImageView>
+            <Label alignment="CENTER" contentDisplay="TEXT_ONLY" ellipsisString="22" graphicTextGap="55.0" layoutX="31.0" layoutY="25.0" lineSpacing="4.0" prefHeight="17.0" prefWidth="108.0" text="your symbol:" textAlignment="CENTER" textFill="#352e43" textOverrun="CENTER_WORD_ELLIPSIS">
+               <font>
+                  <Font name="Aldo the Apache" size="20.0" />
+               </font>
+            </Label>
+            <Pane fx:id="oCheckBoxPane" layoutX="90.0" layoutY="50.0">
+               <children>
+                  <ImageView fx:id="oCheckBox" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@res/symbolCheckBox.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+                  <ImageView fx:id="oCheckBox_o" disable="true" layoutX="12.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@res/oInfo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+            <Pane layoutX="40.0" layoutY="50.0" fx:id="xCheckBoxPane">
+               <children>
+                  <ImageView onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true" fx:id="xCheckBox">
+                     <image>
+                        <Image url="@res/symbolCheckBox.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+                  <ImageView disable="true" layoutX="13.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" fx:id="xCheckBox_g">
+                     <image>
+                        <Image url="@res/xInfo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+            <ImageView fx:id="arrow" layoutX="50.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/smbolArrow.png" />
+               </image>
+               <viewport>
+                  <Rectangle2D />
+               </viewport>
+            </ImageView>
+            <ImageView fx:id="startBtn" fitHeight="59.0" fitWidth="103.0" layoutX="36.0" layoutY="247.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" onMousePressed="#downListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/startBtn.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
