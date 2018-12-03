@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#clickListener" prefHeight="310.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="310.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Pane prefHeight="310.0" prefWidth="240.0" style="-fx-background-color: #64537e;">
          <children>
@@ -47,7 +47,7 @@
                <image>
                   <Image url="@res/grid.png" />
                </image></ImageView>
-            <ImageView fx:id="box_1" layoutX="34.0" layoutY="58.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="box_1" layoutX="34.0" layoutY="58.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/place.png" />
                </image>
@@ -55,34 +55,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <ImageView fx:id="box_2" layoutX="98.0" layoutY="58.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@res/place.png" />
-               </image>
-               <viewport>
-                  <Rectangle2D height="45.0" width="45.0" />
-               </viewport>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
-            <ImageView fx:id="box_3" layoutX="164.0" layoutY="58.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@res/place.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
-            <ImageView fx:id="box_4" layoutX="33.0" layoutY="123.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@res/place.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
-            <ImageView fx:id="box_5" layoutX="97.0" layoutY="123.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="box_2" layoutX="98.0" layoutY="58.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/place.png" />
                </image>
@@ -93,7 +66,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <ImageView fx:id="box_6" layoutX="163.0" layoutY="123.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="box_3" layoutX="164.0" layoutY="58.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/place.png" />
                </image>
@@ -101,7 +74,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <ImageView fx:id="box_7" layoutX="34.0" layoutY="186.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="box_4" layoutX="33.0" layoutY="123.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/place.png" />
                </image>
@@ -109,7 +82,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <ImageView fx:id="box_8" layoutX="98.0" layoutY="186.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="box_5" layoutX="97.0" layoutY="123.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/place.png" />
                </image>
@@ -120,7 +93,34 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <ImageView fx:id="box_9" layoutX="164.0" layoutY="186.0" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="box_6" layoutX="163.0" layoutY="123.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_7" layoutX="34.0" layoutY="186.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_8" layoutX="98.0" layoutY="186.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/place.png" />
+               </image>
+               <viewport>
+                  <Rectangle2D height="45.0" width="45.0" />
+               </viewport>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ImageView fx:id="box_9" layoutX="164.0" layoutY="186.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/place.png" />
                </image>
