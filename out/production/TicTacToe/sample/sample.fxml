@@ -38,9 +38,9 @@
                   </Label>
                </children>
             </Group>
-            <Label fx:id="textInfo" alignment="CENTER" layoutX="-4.0" layoutY="14.0" prefHeight="18.0" prefWidth="256.0" text="press start" textFill="WHITE">
+            <Label fx:id="textInfo" alignment="CENTER" layoutX="-7.0" layoutY="13.0" prefHeight="18.0" prefWidth="256.0" text="press start" textFill="WHITE">
                <font>
-                  <Font name="Aldo the Apache" size="20.0" />
+                  <Font name="Aldo the Apache" size="25.0" />
                </font>
             </Label>
             <ImageView fx:id="grid" layoutX="25.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
