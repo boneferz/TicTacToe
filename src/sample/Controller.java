@@ -127,6 +127,7 @@ public class Controller {
 	@FXML
 	private ImageView startBtn;
 	
+	private String pcSymbol;
 	private String currentSymbol;
 	private final String X_SYMBOL = "X";
 	private final String O_SYMBOL = "O";
@@ -282,6 +283,155 @@ public class Controller {
 		}
 	}
 	
+	private void pcAITurn() {
+		boolean isAttack = false;
+		boolean isDefense = false;
+		
+		PcThinkAnswer thinkAnswer_Attack;
+		thinkAnswer_Attack = toThink(pcSymbol);
+		isAttack = thinkAnswer_Attack.getIsDefense();
+		
+		PcThinkAnswer thinkAnswer_Defence;
+		thinkAnswer_Defence = toThink(currentSymbol);
+		isDefense = thinkAnswer_Defence.getIsDefense();
+		
+		if (isAttack) {
+			System.out.println("Attack");
+			pcThinkingTurn(thinkAnswer_Attack);
+		} else if (isDefense) {
+			System.out.println("Deffence");
+			pcThinkingTurn(thinkAnswer_Defence);
+			/*// direction
+			if (direction == 0) {
+				mapIndex = convertVHtoIndex(turnIndexV, turnIndexH);
+				pcSetSymbol(mapIndex, turnIndexH, turnIndexV);
+			} else {
+				mapIndex = convertVHtoIndex(turnIndexH, turnIndexV);
+				pcSetSymbol(mapIndex, turnIndexV, turnIndexH);
+			}*/
+		} else {
+			pcRandomTurn();
+		}
+	}
+	
+	private void pcThinkingTurn(PcThinkAnswer think) {
+		if (think.getDirection() == 0) {
+			think.setMapIndex(
+					convertVHtoIndex(think.getTurnIndexV(),
+							think.getTurnIndexH()));
+			pcSetSymbol(think.getMapIndex(),
+					think.getTurnIndexH(), think.getTurnIndexV());
+		} else {
+			think.setMapIndex(
+					convertVHtoIndex(think.getTurnIndexH(),
+							think.getTurnIndexV()));
+			pcSetSymbol(think.getMapIndex(),
+					think.getTurnIndexV(), think.getTurnIndexH());
+		}
+	}
+	
+	private PcThinkAnswer toThink(String symbol) {
+		PcThinkAnswer thinkAnswer = new PcThinkAnswer();
+		
+		boolean isDefense = false;
+		boolean isAttack = false;
+		int turnIndexH = 0;
+		int turnIndexV = 0;
+		int mapIndex = 0;
+		int direction = 0;
+		int directionFactor = 1;
+		
+		int v, h;
+		String A = EMPTY;
+		String B = EMPTY;
+		String C = EMPTY;
+		int ai = 0;
+		int bi = 1;
+		int ci = 2;
+		// check YOU attack? -> Defense
+		for (int i = 0; i < isBusyPlase.length; i++) {
+			h = i % 3; //   012 | 012 | 012
+			v = (i - (i % 3)) / 3; //   000 | 111 | 222
+			direction = v;
+			
+			// direction
+			if (direction == 0) {
+				A = gameField[ai][h];
+				B = gameField[bi][h];
+				C = gameField[ci][h];
+			} else if (direction == 1) {
+				A = gameField[h][ai];
+				B = gameField[h][bi];
+				C = gameField[h][ci];
+			} else if (direction == 2 && h != 1) {
+				if (h == 2) directionFactor *= -1;
+				A = gameField[h][ai];
+				B = gameField[h + directionFactor][bi];
+				C = gameField[h + (directionFactor * 2)][ci];
+			}
+			
+			if (A.equals(symbol) && B.equals(symbol)) {
+				if (!(A.equals(symbol) && C.equals(symbol))) {
+					if (!C.equals(EMPTY)) continue;
+					isDefense = true;
+					turnIndexH = (direction != 2) ? h:h + (directionFactor * 2);
+					turnIndexV = ci;
+					break;
+				}
+			} else {
+				if (A.equals(symbol) && C.equals(symbol)) {
+					if (!B.equals(EMPTY)) continue;
+					isDefense = true;
+					turnIndexH = (direction != 2) ? h:h + directionFactor;
+					turnIndexV = bi;
+					break;
+				} else {
+					if (B.equals(symbol) && C.equals(symbol)) {
+						if (!A.equals(EMPTY)) continue;
+						isDefense = true;
+						turnIndexH = h;
+						turnIndexV = ai;
+						break;
+					}
+				}
+			}
+		}
+		
+		thinkAnswer.setIsAttack(isAttack);
+		thinkAnswer.setIsDefense(isDefense);
+		thinkAnswer.setMapIndex(mapIndex);
+		thinkAnswer.setTurnIndexH(turnIndexH);
+		thinkAnswer.setTurnIndexV(turnIndexV);
+		thinkAnswer.setDirection(direction);
+		
+		return thinkAnswer;
+	}
+	
+	private int convertVHtoIndex(int v, int h) {
+		int index = 0;
+		
+		if (v == 0 && h == 0)
+			index = 0;
+		else if (v == 0 && h == 1)
+			index = 1;
+		else if (v == 0 && h == 2)
+			index = 2;
+		else if (v == 1 && h == 0)
+			index = 3;
+		else if (v == 1 && h == 1)
+			index = 4;
+		else if (v == 1 && h == 2)
+			index = 5;
+		else if (v == 2 && h == 0)
+			index = 6;
+		else if (v == 2 && h == 1)
+			index = 7;
+		else if (v == 2 && h == 2)
+			index = 8;
+		
+		return index;
+	}
+	
 	private void pcRandomTurn() {
 		int random, h, v;
 		do {
@@ -291,29 +441,19 @@ public class Controller {
 			
 		} while (!gameField[v][h].equals(EMPTY));
 		
-		gameField[v][h] = currentSymbol.equals(X_SYMBOL) ? O_SYMBOL:X_SYMBOL;
-		isBusyPlase[random] = true;
-		emptyPlaces --;
-		
-		addSymbol((int) btnOfPlace[random].getLayoutX(),
-				(int) btnOfPlace[random].getLayoutY());
-		
-		btnOfPlace[random].setCursor(Cursor.DEFAULT);
-		btnOfPlace[random].setEffect(null);
+		pcSetSymbol(random, h, v);
 	}
 	
-	private void pcAITurn() {
-		boolean isAttack = false;
-		boolean isDefense = false;
-		int turnIndexH = 0;
-		int turnIndexV = 0;
+	private void pcSetSymbol(int index, int h, int v) {
+		gameField[v][h] = currentSymbol.equals(X_SYMBOL) ? O_SYMBOL:X_SYMBOL;
+		isBusyPlase[index] = true;
+		emptyPlaces --;
 		
-		//isDefense
-		if (gameField[0][0].equals(currentSymbol))
+		addSymbol((int) btnOfPlace[index].getLayoutX(),
+				(int) btnOfPlace[index].getLayoutY());
 		
-		
-//		System.out.println("hard turn");
-		pcRandomTurn();
+		btnOfPlace[index].setCursor(Cursor.DEFAULT);
+		btnOfPlace[index].setEffect(null);
 	}
 	
 	private void checkWin() {
@@ -612,6 +752,8 @@ public class Controller {
 	private void setState(String state) {
 		this.state = state;
 		
+		// canChangeState -> !isFinish delay
+		
 		switch (state) {
 			case GAMEPLAY:
 				start();
@@ -690,10 +832,12 @@ public class Controller {
 		
 		switch (symbol) {
 			case X_SYMBOL:
+				pcSymbol = O_SYMBOL;
 				whoesTurn = YOU;
 				arrow.setX(xCheckBoxPane.getLayoutX() - 40);
 				break;
 			case O_SYMBOL:
+				pcSymbol = X_SYMBOL;
 				whoesTurn = PC;
 				arrow.setX(oCheckBoxPane.getLayoutX() - 40);
 				break;
