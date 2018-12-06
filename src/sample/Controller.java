@@ -141,6 +141,7 @@ public class Controller {
 	private String state;
 	private final String GAMEPLAY = "gameplay";
 	private final String IN_MENU = "menu";
+	private boolean canChangeState;
 	
 	private String whoesTurn;
 	private final String YOU = "you";
@@ -178,6 +179,8 @@ public class Controller {
 			{22.5f,  50.5f, 90}
 	};
 	
+	PauseTransition pause;
+	
 	
 	
 	private void init() {
@@ -195,6 +198,8 @@ public class Controller {
 		youText.setText(Integer.toString(youPoints));
 		
 		crown.setVisible(false);
+		
+		pause = new PauseTransition();
 	}
 	
 	private void reset() {
@@ -216,7 +221,7 @@ public class Controller {
 		pcIsTurned = false;
 		youIsTurned = false;
 		
-		
+		canChangeState = true;
 	}
 	
 	@FXML
@@ -270,11 +275,11 @@ public class Controller {
 				case MEDIUM:
 					double chance = Math.random() * 100;
 					if (chance > 50) pcRandomTurn();
-					else pcAITurn();
+					else pcTurnAI();
 					break;
 					
 				case HARD:
-					pcAITurn();
+					pcTurnAI();
 					break;
 			}
 			
@@ -283,7 +288,7 @@ public class Controller {
 		}
 	}
 	
-	private void pcAITurn() {
+	private void pcTurnAI() {
 		boolean isAttack = false;
 		boolean isDefense = false;
 		
@@ -297,36 +302,22 @@ public class Controller {
 		
 		if (isAttack) {
 			System.out.println("Attack");
-			pcThinkingTurn(thinkAnswer_Attack);
+			pcTurn(thinkAnswer_Attack);
 		} else if (isDefense) {
 			System.out.println("Deffence");
-			pcThinkingTurn(thinkAnswer_Defence);
-			/*// direction
-			if (direction == 0) {
-				mapIndex = convertVHtoIndex(turnIndexV, turnIndexH);
-				pcSetSymbol(mapIndex, turnIndexH, turnIndexV);
-			} else {
-				mapIndex = convertVHtoIndex(turnIndexH, turnIndexV);
-				pcSetSymbol(mapIndex, turnIndexV, turnIndexH);
-			}*/
+			pcTurn(thinkAnswer_Defence);
 		} else {
 			pcRandomTurn();
 		}
 	}
 	
-	private void pcThinkingTurn(PcThinkAnswer think) {
+	private void pcTurn(PcThinkAnswer think) {
 		if (think.getDirection() == 0) {
-			think.setMapIndex(
-					convertVHtoIndex(think.getTurnIndexV(),
-							think.getTurnIndexH()));
-			pcSetSymbol(think.getMapIndex(),
-					think.getTurnIndexH(), think.getTurnIndexV());
+			think.setMapIndex(convertVHtoIndex(think.getTurnIndexV(), think.getTurnIndexH()));
+			pcSetSymbol(think.getMapIndex(), think.getTurnIndexH(), think.getTurnIndexV());
 		} else {
-			think.setMapIndex(
-					convertVHtoIndex(think.getTurnIndexH(),
-							think.getTurnIndexV()));
-			pcSetSymbol(think.getMapIndex(),
-					think.getTurnIndexV(), think.getTurnIndexH());
+			think.setMapIndex(convertVHtoIndex(think.getTurnIndexH(), think.getTurnIndexV()));
+			pcSetSymbol(think.getMapIndex(), think.getTurnIndexV(), think.getTurnIndexH());
 		}
 	}
 	
@@ -407,6 +398,30 @@ public class Controller {
 		return thinkAnswer;
 	}
 	
+	private void pcRandomTurn() {
+		int random, h, v;
+		do {
+			random = (int) (Math.random() * 9);
+			h = random % 3;
+			v = (random - (random % 3)) / 3;
+			
+		} while (!gameField[v][h].equals(EMPTY));
+		
+		pcSetSymbol(random, h, v);
+	}
+	
+	private void pcSetSymbol(int index, int h, int v) {
+		gameField[v][h] = currentSymbol.equals(X_SYMBOL) ? O_SYMBOL:X_SYMBOL;
+		isBusyPlase[index] = true;
+		emptyPlaces --;
+		
+		addSymbol((int) btnOfPlace[index].getLayoutX(),
+				(int) btnOfPlace[index].getLayoutY());
+		
+		btnOfPlace[index].setCursor(Cursor.DEFAULT);
+		btnOfPlace[index].setEffect(null);
+	}
+	
 	private int convertVHtoIndex(int v, int h) {
 		int index = 0;
 		
@@ -430,30 +445,6 @@ public class Controller {
 			index = 8;
 		
 		return index;
-	}
-	
-	private void pcRandomTurn() {
-		int random, h, v;
-		do {
-			random = (int) (Math.random() * 9);
-			h = random % 3;
-			v = (random - (random % 3)) / 3;
-			
-		} while (!gameField[v][h].equals(EMPTY));
-		
-		pcSetSymbol(random, h, v);
-	}
-	
-	private void pcSetSymbol(int index, int h, int v) {
-		gameField[v][h] = currentSymbol.equals(X_SYMBOL) ? O_SYMBOL:X_SYMBOL;
-		isBusyPlase[index] = true;
-		emptyPlaces --;
-		
-		addSymbol((int) btnOfPlace[index].getLayoutX(),
-				(int) btnOfPlace[index].getLayoutY());
-		
-		btnOfPlace[index].setCursor(Cursor.DEFAULT);
-		btnOfPlace[index].setEffect(null);
 	}
 	
 	private void checkWin() {
@@ -524,9 +515,13 @@ public class Controller {
 				textInfo.setText("PC win!");
 			}
 			
-			PauseTransition pause = new PauseTransition(Duration.millis(1500));
-			pause.setOnFinished( e -> setState(IN_MENU) );
-			pause.play();
+			if (canChangeState) {
+				canChangeState = false;
+				PauseTransition pause = new PauseTransition(Duration.millis(1500));
+				pause.setOnFinished( e -> setState(IN_MENU) );
+				pause.play();
+			}
+			
 		} else {
 			switchWhoesTurn();
 		}
@@ -586,7 +581,7 @@ public class Controller {
 		textInfo.setText("gameplay");
 		
 		grid.setOpacity(1);
-		startBtn.setOpacity(0.75);
+		startBtn.setOpacity(0.45);
 		
 		for (int i = 0; i < btnOfPlace.length; i++) {
 			btnOfPlace[i].setOpacity(1);
@@ -654,6 +649,8 @@ public class Controller {
 	
 	private void exit() {
 		textInfo.setText("menu");
+		
+		pause.stop();
 		
 		reset();
 		
@@ -728,16 +725,16 @@ public class Controller {
 			if (e.getTarget() == startBtn) {
 				animation(startBtn, 1);
 				
-				setState(GAMEPLAY); // <--
+				if (canChangeState) setState(GAMEPLAY); // <--
 			}
 		}
 		else if (state.equals(GAMEPLAY)) {
 			
+			// reset
 			if (e.getTarget() == startBtn) {
 				animation(startBtn, 1);
 				
-				// reset
-				setState(IN_MENU); // <--
+				if (canChangeState) setState(IN_MENU); // <--
 			}
 			
 			Turn_YOU(e);
@@ -752,8 +749,6 @@ public class Controller {
 	private void setState(String state) {
 		this.state = state;
 		
-		// canChangeState -> !isFinish delay
-		
 		switch (state) {
 			case GAMEPLAY:
 				start();
@@ -763,6 +758,8 @@ public class Controller {
 				exit();
 				break;
 		}
+		
+		canChangeState = true;
 	}
 	
 	private void switchFirsturn() {
@@ -776,11 +773,12 @@ public class Controller {
 		if (emptyPlaces < 1) {
 			textInfo.setText("Draw!");
 			
-			PauseTransition pause = new PauseTransition(Duration.millis(1500));
-			pause.setOnFinished( e -> setState(IN_MENU) );
-			pause.play();
-			
-			System.out.println("Draw -- next!");
+			if (canChangeState) {
+				canChangeState = false;
+				PauseTransition pause = new PauseTransition(Duration.millis(1500));
+				pause.setOnFinished( e -> setState(IN_MENU) );
+				pause.play();
+			}
 		} else {
 			if (pcIsTurned) {
 				pcIsTurned = false;
@@ -816,15 +814,24 @@ public class Controller {
 					}
 				}
 				
-//				int delay = (int) (Math.random() * 1200) + 300;
-				PauseTransition pause = new PauseTransition(Duration.millis(200));
-				pause.setOnFinished( e -> {
-					Turn_PC();
-				});
-				pause.play();
-				
+				if (canChangeState) {
+					canChangeState = false;
+					
+					int delay = (int) (Math.random() * 1200) + 300;
+					pause.setDuration(Duration.millis(delay));
+					pause.setOnFinished( e -> {
+						Turn_PC();
+						setCanChangeState(true);
+					});
+					pause.play();
+				}
+
 				break;
 		}
+	}
+	
+	private void setCanChangeState(boolean ch) {
+		this.canChangeState = ch;
 	}
 	
 	private void setSymbol(String symbol) {
