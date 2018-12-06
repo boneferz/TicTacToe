@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import java.util.Random;
@@ -26,6 +27,24 @@ public class Controller {
 	
 	@FXML
 	private Label youText;
+	
+	@FXML
+	private ImageView crown;
+	
+	@FXML
+	private Label youLabel;
+	
+	@FXML
+	private Label pcLabel;
+	
+	@FXML
+	private Pane symbolPane;
+	
+	@FXML
+	private ImageView line;
+	
+	@FXML
+	private ImageView diagLine;
 	
 	@FXML
 	private Label pcText;
@@ -126,8 +145,8 @@ public class Controller {
 	private final String YOU = "you";
 	private final String PC = "pc";
 	
-	private boolean youIsTurned = false;
-	private boolean pcIsTurned = false;
+	private boolean youIsTurned;
+	private boolean pcIsTurned;
 	
 	private int youPoints = 0;
 	private int pcPoints = 0;
@@ -135,10 +154,9 @@ public class Controller {
 	private ImageView[] btnOfPlace = new ImageView[9];
 	private boolean[] isBusyPlase = new boolean[9];
 	private String[][] gameField = {
-			{ "-", "-", "-"},
-			{ "-", "-", "-"},
-			{ "-", "-", "-"}
-	};
+		{ "-", "-", "-"},
+		{ "-", "-", "-"},
+		{ "-", "-", "-"}};
 	private int emptyPlaces;
 	
 	private ColorAdjust colorAdjustReset = new ColorAdjust(
@@ -146,20 +164,22 @@ public class Controller {
 	private ColorAdjust colorAdjustLight = new ColorAdjust(
 			0, 0, 0.25, 0);
 	
+	private final float winMap[][] = { // x, y, rotate
+			{116.5f, -17, 90},
+			{116.5f,  48, 90},
+			{116.5f, 111, 90},
+			
+			{50,  46, 0},
+			{115, 46, 0},
+			{180, 46, 0},
+			
+			{   23,     48,  0},
+			{22.5f,  50.5f, 90}
+	};
+	
+	
 	
 	private void init() {
-		for (int i = 0; i < gameField.length; i++) {
-			for (int j = 0; j < gameField[0].length; j++) {
-				gameField[i][j] = EMPTY;
-			}
-		}
-		
-		for (int i = 0; i < isBusyPlase.length; i++) {
-			isBusyPlase[i] = false;
-		}
-		
-		emptyPlaces = 9;
-		
 		btnOfPlace[0] = box_1;
 		btnOfPlace[1] = box_2;
 		btnOfPlace[2] = box_3;
@@ -172,71 +192,367 @@ public class Controller {
 		
 		pcText.setText(Integer.toString(pcPoints));
 		youText.setText(Integer.toString(youPoints));
-
-//		setState(IN_MENU);
-		setSymbol(O_SYMBOL);
-		setDifficalty(EASE);
 		
-		setState(GAMEPLAY);
+		crown.setVisible(false);
+	}
+	
+	private void reset() {
+		for (int i = 0; i < gameField.length; i++) {
+			for (int j = 0; j < gameField[0].length; j++) {
+				gameField[i][j] = EMPTY;
+			}
+		}
+		
+		for (int i = 0; i < isBusyPlase.length; i++) {
+			isBusyPlase[i] = false;
+		}
+		
+		emptyPlaces = 9;
+		
+		diagLine.setVisible(false);
+		line.setVisible(false);
+		
+		pcIsTurned = false;
+		youIsTurned = false;
+		
+		
 	}
 	
 	@FXML
 	public void initialize() {
-		
 		init();
+		reset();
 		
+		setSymbol(O_SYMBOL);
+		setDifficalty(HARD);
+		setState(IN_MENU);
 	}
 	
 	/*-----------------------------------------------------------
 	*                       game play
 	* -----------------------------------------------------------*/
 	
-	private void play() {
-		switchFirsturn();
+	private void Turn_YOU(MouseEvent e) {
+		for (int i = 0; i < btnOfPlace.length; i++) {
+			int h = i % 3;
+			int v = (i - (i % 3)) / 3;
+			
+			if (whoesTurn.equals(YOU)
+					&& !youIsTurned
+					&& e.getTarget() == btnOfPlace[i]
+					&& gameField[v][h].equals(EMPTY)) {
+				
+				gameField[v][h] = currentSymbol;
+				isBusyPlase[i] = true;
+				emptyPlaces--;
+				
+				addSymbol((int) btnOfPlace[i].getLayoutX(),
+						(int) btnOfPlace[i].getLayoutY());
+				
+				btnOfPlace[i].setCursor(Cursor.DEFAULT);
+				btnOfPlace[i].setEffect(null);
+				
+				youIsTurned = true;
+				checkWin();
+			}
+		}
 	}
 	
-	private void PC_turn() {
+	private void Turn_PC() {
 		if (whoesTurn.equals(PC) && !pcIsTurned) {
 			
-			int random, h, v;
-			do {
-				random = (int) (Math.random() * 9);
-				h = random % 3;
-				v = (random - (random % 3)) / 3;
-			
-			} while (!gameField[v][h].equals(EMPTY));
-			
-			
-			gameField[v][h] = X_SYMBOL;
-			isBusyPlase[random] = true;
-			emptyPlaces --;
-			traceGameField();
-			
-			btnOfPlace[random].setCursor(Cursor.DEFAULT);
-			btnOfPlace[random].setEffect(null);
-			
-			addImg_X((int) btnOfPlace[random].getLayoutX(),
-					(int) btnOfPlace[random].getLayoutY());
+			switch (currentDifficalty) {
+				case EASE:
+					pcRandomTurn();
+					break;
+				
+				case MEDIUM:
+					double chance = Math.random() * 100;
+					if (chance > 50) pcRandomTurn();
+					else pcAITurn();
+					break;
+					
+				case HARD:
+					pcAITurn();
+					break;
+			}
 			
 			pcIsTurned = true;
+			checkWin();
+		}
+	}
+	
+	private void pcRandomTurn() {
+		int random, h, v;
+		do {
+			random = (int) (Math.random() * 9);
+			h = random % 3;
+			v = (random - (random % 3)) / 3;
+			
+		} while (!gameField[v][h].equals(EMPTY));
+		
+		gameField[v][h] = currentSymbol.equals(X_SYMBOL) ? O_SYMBOL:X_SYMBOL;
+		isBusyPlase[random] = true;
+		emptyPlaces --;
+		
+		addSymbol((int) btnOfPlace[random].getLayoutX(),
+				(int) btnOfPlace[random].getLayoutY());
+		
+		btnOfPlace[random].setCursor(Cursor.DEFAULT);
+		btnOfPlace[random].setEffect(null);
+	}
+	
+	private void pcAITurn() {
+		boolean isAttack = false;
+		boolean isDefense = false;
+		int turnIndexH = 0;
+		int turnIndexV = 0;
+		
+		//isDefense
+		if (gameField[0][0].equals(currentSymbol))
+		
+		
+//		System.out.println("hard turn");
+		pcRandomTurn();
+	}
+	
+	private void checkWin() {
+		boolean isWin = false;
+		String winSymbol = "";
+		int winMapIndex = 0;
+		
+		// how winLine?
+		if (!gameField[0][0].equals(EMPTY)
+				&& gameField[0][0].equals(gameField[0][1])
+				&& gameField[0][0].equals(gameField[0][2])) {
+			winSymbol = gameField[0][0];
+			winMapIndex = 1;
+			isWin = true;
+		} else if (!gameField[1][0].equals(EMPTY)
+				&& gameField[1][0].equals(gameField[1][1])
+				&& gameField[1][0].equals(gameField[1][2])) {
+			winSymbol = gameField[1][0];
+			winMapIndex = 2;
+			isWin = true;
+		} else if (!gameField[2][0].equals(EMPTY)
+				&& gameField[2][0].equals(gameField[2][1])
+				&& gameField[2][0].equals(gameField[2][2])) {
+			winSymbol = gameField[2][0];
+			winMapIndex = 3;
+			isWin = true;
+		}
+		else if (!gameField[0][0].equals(EMPTY)
+				&& gameField[0][0].equals(gameField[1][0])
+				&& gameField[0][0].equals(gameField[2][0])) {
+			winSymbol = gameField[0][0];
+			winMapIndex = 4;
+			isWin = true;
+		} else if (!gameField[0][1].equals(EMPTY)
+				&& gameField[0][1].equals(gameField[1][1])
+				&& gameField[0][1].equals(gameField[2][1])) {
+			winSymbol = gameField[0][1];
+			winMapIndex = 5;
+			isWin = true;
+		} else if (!gameField[0][2].equals(EMPTY)
+				&& gameField[0][2].equals(gameField[1][2])
+				&& gameField[0][2].equals(gameField[2][2])) {
+			winSymbol = gameField[0][2];
+			winMapIndex = 6;
+			isWin = true;
+		}
+		else if (!gameField[0][0].equals(EMPTY)
+				&& gameField[0][0].equals(gameField[1][1])
+				&& gameField[0][0].equals(gameField[2][2])) {
+			winSymbol = gameField[0][0];
+			winMapIndex = 7;
+			isWin = true;
+		} else if (!gameField[0][2].equals(EMPTY)
+				&& gameField[0][2].equals(gameField[1][1])
+				&& gameField[0][2].equals(gameField[2][0])) {
+			winSymbol = gameField[0][2];
+			winMapIndex = 8;
+			isWin = true;
+		}
+		
+		if (isWin) {
+			showLine(winMapIndex);
+			setPointsToWinner();
+			
+			if (winSymbol.equals(currentSymbol)) {
+				textInfo.setText("YOU win!");
+			} else {
+				textInfo.setText("PC win!");
+			}
+			
+			PauseTransition pause = new PauseTransition(Duration.millis(1500));
+			pause.setOnFinished( e -> setState(IN_MENU) );
+			pause.play();
+		} else {
 			switchWhoesTurn();
+		}
+	}
+	
+	private void showLine(int winMapIndex) {
+		winMapIndex --;
+		if (winMapIndex < 6) {
+			line.setVisible(true);
+			line.setLayoutX(winMap[winMapIndex][0]);
+			line.setLayoutY(winMap[winMapIndex][1]);
+			line.setRotate(winMap[winMapIndex][2]);
+		} else {
+			diagLine.setVisible(true);
+			diagLine.setLayoutX(winMap[winMapIndex][0]);
+			diagLine.setLayoutY(winMap[winMapIndex][1]);
+			diagLine.setRotate(winMap[winMapIndex][2]);
+		}
+	}
+	
+	private void addSymbol(int x, int y) {
+		if (whoesTurn.equals(YOU)) {
+			if (currentSymbol.equals(O_SYMBOL)) addImg_O(x, y);
+			else addImg_X(x, y);
+		} else if (whoesTurn.equals(PC)) {
+			if (currentSymbol.equals(O_SYMBOL)) addImg_X(x, y);
+			else addImg_O(x, y);
 		}
 	}
 	
 	private void addImg_X(int x, int y) {
 		Image img = new Image("sample/res/x.png");
 		ImageView imgWrap = new ImageView(img);
-		imgWrap.setX(x + 3);
-		imgWrap.setY(y + 3);
-		rootPane.getChildren().add(imgWrap);
+		imgWrap.setX(x + 4);
+		imgWrap.setY(y + 4);
+		symbolPane.getChildren().add(imgWrap);
 	}
 	
 	private void addImg_O(int x, int y) {
 		Image img = new Image("sample/res/o.png");
 		ImageView imgWrap = new ImageView(img);
-		imgWrap.setX(x + 3);
-		imgWrap.setY(y + 3);
-		rootPane.getChildren().add(imgWrap);
+		imgWrap.setX(x + 2);
+		imgWrap.setY(y + 2);
+		symbolPane.getChildren().add(imgWrap);
+	}
+	
+	private void clearGameField() {
+		symbolPane.getChildren().clear();
+	}
+	
+	
+	/*-----------------------------------------------------------
+	*                       GAME states navigation
+	* -----------------------------------------------------------*/
+	
+	private void start() {
+		textInfo.setText("gameplay");
+		
+		grid.setOpacity(1);
+		startBtn.setOpacity(0.75);
+		
+		for (int i = 0; i < btnOfPlace.length; i++) {
+			btnOfPlace[i].setOpacity(1);
+			btnOfPlace[i].setCursor(Cursor.HAND);
+		}
+		
+		ease.setCursor(Cursor.DEFAULT);
+		easeBox.setCursor(Cursor.DEFAULT);
+		medium.setCursor(Cursor.DEFAULT);
+		mediumBox.setCursor(Cursor.DEFAULT);
+		hard.setCursor(Cursor.DEFAULT);
+		hardBox.setCursor(Cursor.DEFAULT);
+		
+		xCheckBox.setCursor(Cursor.DEFAULT);
+		oCheckBox.setCursor(Cursor.DEFAULT);
+		
+		switch (currentSymbol) {
+			case X_SYMBOL:
+				xCheckBox.setOpacity(1);
+				xCheckBox_g.setOpacity(1);
+				oCheckBox.setOpacity(0.45);
+				oCheckBox_o.setOpacity(0.45);
+				break;
+			
+			case O_SYMBOL:
+				oCheckBox.setOpacity(1);
+				oCheckBox_o.setOpacity(1);
+				xCheckBox.setOpacity(0.25);
+				xCheckBox_g.setOpacity(0.25);
+				break;
+		}
+		
+		switch (currentDifficalty) {
+			case EASE:
+				ease.setOpacity(1);
+				easeBox.setOpacity(1);
+				
+				medium.setOpacity(0.25);
+				mediumBox.setOpacity(0.25);
+				hard.setOpacity(0.25);
+				hardBox.setOpacity(0.25);
+				break;
+			case MEDIUM:
+				medium.setOpacity(1);
+				mediumBox.setOpacity(1);
+				
+				ease.setOpacity(0.25);
+				easeBox.setOpacity(0.25);
+				hard.setOpacity(0.25);
+				hardBox.setOpacity(0.25);
+				break;
+			case HARD:
+				hard.setOpacity(1);
+				hardBox.setOpacity(1);
+				
+				ease.setOpacity(0.25);
+				easeBox.setOpacity(0.25);
+				medium.setOpacity(0.25);
+				mediumBox.setOpacity(0.25);
+				break;
+		}
+		
+		switchFirsturn(); // <--
+	}
+	
+	private void exit() {
+		textInfo.setText("menu");
+		
+		reset();
+		
+		grid.setOpacity(0.25);
+		startBtn.setOpacity(1);
+		
+		for (int i = 0; i < btnOfPlace.length; i++) {
+			btnOfPlace[i].setOpacity(0.25);
+			btnOfPlace[i].setCursor(Cursor.DEFAULT);
+			btnOfPlace[i].setEffect(colorAdjustReset);
+		}
+		
+		ease.setCursor(Cursor.HAND);
+		easeBox.setCursor(Cursor.HAND);
+		medium.setCursor(Cursor.HAND);
+		mediumBox.setCursor(Cursor.HAND);
+		hard.setCursor(Cursor.HAND);
+		hardBox.setCursor(Cursor.HAND);
+		
+		xCheckBox.setCursor(Cursor.HAND);
+		oCheckBox.setCursor(Cursor.HAND);
+		
+		oCheckBox.setOpacity(1);
+		oCheckBox_o.setOpacity(1);
+		xCheckBox.setOpacity(1);
+		xCheckBox_g.setOpacity(1);
+		
+		ease.setOpacity(1);
+		easeBox.setOpacity(1);
+		medium.setOpacity(1);
+		mediumBox.setOpacity(1);
+		hard.setOpacity(1);
+		hardBox.setOpacity(1);
+		
+		line.setVisible(false);
+		diagLine.setVisible(false);
+		
+		// clear gameScreen
+		clearGameField();
 	}
 	
 	/*-----------------------------------------------------------
@@ -249,69 +565,45 @@ public class Controller {
 			// symbol
 			if (e.getTarget() == oCheckBox) {
 				setSymbol(O_SYMBOL);
-				textInfo.setText("your symbol " + O_SYMBOL);
+				textInfo.setText("your symbol - " + O_SYMBOL);
 			} else if (e.getTarget() == xCheckBox) {
 				setSymbol(X_SYMBOL);
-				textInfo.setText("your symbol " + X_SYMBOL);
+				textInfo.setText("your symbol - " + X_SYMBOL);
 			}
 			// difficulty
 			if (e.getSource() == ease || e.getTarget() == easeBox) {
 				animation(easeBox, 1);
 				setDifficalty(EASE);
-				textInfo.setText("difficalty " + EASE);
+				textInfo.setText("difficalty - " + EASE);
 			} else if (e.getSource() == medium || e.getTarget() == mediumBox) {
 				animation(mediumBox, 1);
 				setDifficalty(MEDIUM);
-				textInfo.setText("difficalty " + MEDIUM);
+				textInfo.setText("difficalty - " + MEDIUM);
 			} else if (e.getSource() == hard || e.getTarget() == hardBox) {
 				animation(hardBox, 1);
 				setDifficalty(HARD);
-				textInfo.setText("difficalty " + HARD);
+				textInfo.setText("difficalty - " + HARD);
 			}
 			// start
 			if (e.getTarget() == startBtn) {
-				setState(GAMEPLAY);
-				textInfo.setText(" set: gameplay");
 				animation(startBtn, 1);
+				
+				setState(GAMEPLAY); // <--
 			}
 		}
 		else if (state.equals(GAMEPLAY)) {
 			
 			if (e.getTarget() == startBtn) {
-				setState(IN_MENU);
-				textInfo.setText("set: menu");
 				animation(startBtn, 1);
+				
+				// reset
+				setState(IN_MENU); // <--
 			}
 			
-			for (int i = 0; i < btnOfPlace.length; i++) {
-				int h = i % 3;
-				int v = (i - (i % 3)) / 3;
-				
-				if (whoesTurn.equals(YOU)
-						&& !youIsTurned
-						&& e.getTarget() == btnOfPlace[i]
-						&& gameField[v][h].equals(EMPTY)) {
-					
-					// add symbol
-					addImg_O(
-							(int) ((Node) e.getSource()).getLayoutX(),
-							(int) ((Node) e.getSource()).getLayoutY()
-					);
-					
-					gameField[v][h] = currentSymbol;
-					isBusyPlase[i] = true;
-					emptyPlaces --;
-					traceGameField();
-					
-					btnOfPlace[i].setCursor(Cursor.DEFAULT);
-					btnOfPlace[i].setEffect(null);
-					
-					youIsTurned = true;
-					switchWhoesTurn();
-				}
-			}
+			Turn_YOU(e);
+			
 		}
-	}
+}
 	
 	/*-----------------------------------------------------------
 	*                       SETTERS
@@ -319,108 +611,16 @@ public class Controller {
 	
 	private void setState(String state) {
 		this.state = state;
-		textInfo.setText(state);
 		
-		if (state.equals(GAMEPLAY)) {
-			grid.setOpacity(1);
-			startBtn.setOpacity(0.75);
-			
-			for (int i = 0; i < btnOfPlace.length; i++) {
-				btnOfPlace[i].setOpacity(1);
-				btnOfPlace[i].setCursor(Cursor.HAND);
-			}
-			
-			ease.setCursor(Cursor.DEFAULT);
-			easeBox.setCursor(Cursor.DEFAULT);
-			medium.setCursor(Cursor.DEFAULT);
-			mediumBox.setCursor(Cursor.DEFAULT);
-			hard.setCursor(Cursor.DEFAULT);
-			hardBox.setCursor(Cursor.DEFAULT);
-			
-			xCheckBox.setCursor(Cursor.DEFAULT);
-			oCheckBox.setCursor(Cursor.DEFAULT);
-			
-			switch (currentSymbol) {
-				case X_SYMBOL:
-					xCheckBox.setOpacity(1);
-					xCheckBox_g.setOpacity(1);
-					oCheckBox.setOpacity(0.45);
-					oCheckBox_o.setOpacity(0.45);
-					break;
-					
-				case O_SYMBOL:
-					oCheckBox.setOpacity(1);
-					oCheckBox_o.setOpacity(1);
-					xCheckBox.setOpacity(0.25);
-					xCheckBox_g.setOpacity(0.25);
-					break;
-			}
-			
-			switch (currentDifficalty) {
-				case EASE:
-					ease.setOpacity(1);
-					easeBox.setOpacity(1);
-					
-					medium.setOpacity(0.25);
-					mediumBox.setOpacity(0.25);
-					hard.setOpacity(0.25);
-					hardBox.setOpacity(0.25);
-					break;
-				case MEDIUM:
-					medium.setOpacity(1);
-					mediumBox.setOpacity(1);
-					
-					ease.setOpacity(0.25);
-					easeBox.setOpacity(0.25);
-					hard.setOpacity(0.25);
-					hardBox.setOpacity(0.25);
-					break;
-				case HARD:
-					hard.setOpacity(1);
-					hardBox.setOpacity(1);
-					
-					ease.setOpacity(0.25);
-					easeBox.setOpacity(0.25);
-					medium.setOpacity(0.25);
-					mediumBox.setOpacity(0.25);
-					break;
-			}
-			
-			play(); // <--
+		switch (state) {
+			case GAMEPLAY:
+				start();
+				break;
+				
+			case IN_MENU:
+				exit();
+				break;
 		}
-		
-		if (state.equals(IN_MENU)) {
-			grid.setOpacity(0.25);
-			startBtn.setOpacity(1);
-			
-			for (int i = 0; i < btnOfPlace.length; i++) {
-				btnOfPlace[i].setOpacity(0.25);
-				btnOfPlace[i].setCursor(Cursor.DEFAULT);
-			}
-			
-			ease.setCursor(Cursor.HAND);
-			easeBox.setCursor(Cursor.HAND);
-			medium.setCursor(Cursor.HAND);
-			mediumBox.setCursor(Cursor.HAND);
-			hard.setCursor(Cursor.HAND);
-			hardBox.setCursor(Cursor.HAND);
-			
-			xCheckBox.setCursor(Cursor.HAND);
-			oCheckBox.setCursor(Cursor.HAND);
-			
-			oCheckBox.setOpacity(1);
-			oCheckBox_o.setOpacity(1);
-			xCheckBox.setOpacity(1);
-			xCheckBox_g.setOpacity(1);
-			
-			ease.setOpacity(1);
-			easeBox.setOpacity(1);
-			medium.setOpacity(1);
-			mediumBox.setOpacity(1);
-			hard.setOpacity(1);
-			hardBox.setOpacity(1);
-		}
-		
 	}
 	
 	private void switchFirsturn() {
@@ -428,21 +628,25 @@ public class Controller {
 			setWhoesTurn(YOU);
 		else if (currentSymbol.equals(O_SYMBOL))
 			setWhoesTurn(PC);
-		
 	}
 	
 	private void switchWhoesTurn() {
 		if (emptyPlaces < 1) {
-			textInfo.setText("The End!");
-			return;
-		}
-		
-		if (pcIsTurned) {
-			pcIsTurned = false;
-			setWhoesTurn(YOU);
-		} else if (youIsTurned) {
-			youIsTurned = false;
-			setWhoesTurn(PC);
+			textInfo.setText("Draw!");
+			
+			PauseTransition pause = new PauseTransition(Duration.millis(1500));
+			pause.setOnFinished( e -> setState(IN_MENU) );
+			pause.play();
+			
+			System.out.println("Draw -- next!");
+		} else {
+			if (pcIsTurned) {
+				pcIsTurned = false;
+				setWhoesTurn(YOU);
+			} else if (youIsTurned) {
+				youIsTurned = false;
+				setWhoesTurn(PC);
+			}
 		}
 	}
 	
@@ -466,15 +670,14 @@ public class Controller {
 				for (int i = 0; i < isBusyPlase.length; i++) {
 					if (!isBusyPlase[i]) {
 						colorAdjustLight.setBrightness(0);
-//						btnOfPlace[i].setEffect(null);
 						btnOfPlace[i].setCursor(Cursor.DEFAULT);
 					}
 				}
 				
-				int delay = (int) (Math.random() * 1200) + 300;
-				PauseTransition pause = new PauseTransition(Duration.millis(delay));
+//				int delay = (int) (Math.random() * 1200) + 300;
+				PauseTransition pause = new PauseTransition(Duration.millis(200));
 				pause.setOnFinished( e -> {
-					PC_turn();
+					Turn_PC();
 				});
 				pause.play();
 				
@@ -513,6 +716,74 @@ public class Controller {
 		}
 	}
 	
+	private void setPointsToWinner() {
+		
+		// animation FX
+		
+		switch (whoesTurn) {
+			case YOU:
+				youPoints ++;
+				youText.setText(String.valueOf(youPoints));
+				break;
+				
+			case PC:
+				pcPoints ++;
+				pcText.setText(String.valueOf(pcPoints));
+				break;
+		}
+		
+		if (youPoints == pcPoints) {
+			youText.setLayoutY(3);
+			youLabel.setLayoutY(3);
+			
+			youText.setOpacity(1);
+			youText.setFont(Font.font(youText.getFont().getFamily(), 20));
+			youLabel.setOpacity(1);
+			youLabel.setFont(Font.font(youText.getFont().getFamily(), 20));
+			
+			pcText.setOpacity(1);
+			pcText.setFont(Font.font(youText.getFont().getFamily(), 20));
+			pcLabel.setOpacity(1);
+			pcLabel.setFont(Font.font(youText.getFont().getFamily(), 20));
+			
+			crown.setVisible(false);
+		} else if (youPoints > pcPoints) {
+			youText.setLayoutY(-6);
+			youLabel.setLayoutY(-6);
+			
+			youText.setOpacity(1);
+			youText.setFont(Font.font(youText.getFont().getFamily(), 30));
+			youLabel.setOpacity(1);
+			youLabel.setFont(Font.font(youText.getFont().getFamily(), 30));
+			
+			pcText.setOpacity(0.5);
+			pcText.setFont(Font.font(youText.getFont().getFamily(), 20));
+			pcLabel.setOpacity(0.5);
+			pcLabel.setFont(Font.font(youText.getFont().getFamily(), 20));
+			
+			crown.setVisible(true);
+			crown.setLayoutX(51);
+			crown.setLayoutY(257);
+		} else if (youPoints < pcPoints) {
+			youText.setLayoutY(3);
+			youLabel.setLayoutY(3);
+			
+			youText.setOpacity(0.5);
+			youText.setFont(Font.font(youText.getFont().getFamily(), 20));
+			youLabel.setOpacity(0.5);
+			youLabel.setFont(Font.font(youText.getFont().getFamily(), 20));
+			
+			pcText.setOpacity(1);
+			pcText.setFont(Font.font(youText.getFont().getFamily(), 30));
+			pcLabel.setOpacity(1);
+			pcLabel.setFont(Font.font(youText.getFont().getFamily(), 30));
+			
+			crown.setVisible(true);
+			crown.setLayoutX(66);
+			crown.setLayoutY(285);
+		}
+	}
+	
 	/*-----------------------------------------------------------
 	*                       ANIMATION
 	* -----------------------------------------------------------*/
@@ -547,9 +818,8 @@ public class Controller {
 			for (int i = 0; i < btnOfPlace.length; i++) {
 				int h = i % 3;
 				int v = (i - (i % 3)) / 3;
-				if (gameField[v][h].equals(EMPTY)
-						&& e.getTarget() == btnOfPlace[i]) {
-					
+				
+				if (gameField[v][h].equals(EMPTY) && e.getTarget() == btnOfPlace[i]) {
 					btnOfPlace[i].setEffect(colorAdjustLight);
 				}
 			}
@@ -585,8 +855,7 @@ public class Controller {
 				int h = i % 3;
 				int v = (i - (i % 3)) / 3;
 				
-				if (gameField[v][h].equals(EMPTY)
-						&& e.getTarget() == btnOfPlace[i]) {
+				if (gameField[v][h].equals(EMPTY) && e.getTarget() == btnOfPlace[i]) {
 					btnOfPlace[i].setEffect(colorAdjustReset);
 				}
 			}

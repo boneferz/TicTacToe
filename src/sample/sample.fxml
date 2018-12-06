@@ -4,44 +4,66 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="310.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Pane prefHeight="310.0" prefWidth="240.0" style="-fx-background-color: #64537e;">
          <children>
-            <Group layoutX="66.0" layoutY="256.0">
+            <ImageView fx:id="crown" layoutX="66.0" layoutY="285.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/crown.png" />
+               </image>
+            </ImageView>
+            <Group layoutX="66.0" layoutY="258.0">
                <children>
-                  <Label alignment="CENTER_RIGHT" prefHeight="18.0" prefWidth="59.0" text="you:" textFill="#c6b0e8">
+                  <Label fx:id="youLabel" alignment="BOTTOM_RIGHT" contentDisplay="BOTTOM" layoutY="3.0" prefHeight="18.0" prefWidth="59.0" text="you:" textFill="#aa83e4">
                      <font>
                         <Font name="Aldo the Apache" size="20.0" />
                      </font>
+                     <effect>
+                        <Glow />
+                     </effect>
                   </Label>
-                  <Label fx:id="youText" layoutX="65.0" prefHeight="18.0" prefWidth="59.0" text="3" textFill="#c6b0e8">
+                  <Label fx:id="youText" alignment="BOTTOM_LEFT" contentDisplay="BOTTOM" layoutX="65.0" layoutY="3.0" prefHeight="18.0" prefWidth="59.0" text="3" textFill="#aa83e4">
                      <font>
                         <Font name="Aldo the Apache" size="20.0" />
                      </font>
+                     <effect>
+                        <Glow />
+                     </effect>
                   </Label>
-                  <Label fx:id="pcText" layoutX="65.0" layoutY="22.0" prefHeight="18.0" prefWidth="59.0" text="0" textFill="#a98dd3">
+                  <Label fx:id="pcText" alignment="TOP_LEFT" contentDisplay="TOP" layoutX="65.0" layoutY="22.0" prefHeight="18.0" prefWidth="59.0" text="0" textFill="#aa83e4">
                      <font>
                         <Font name="Aldo the Apache" size="20.0" />
                      </font>
+                     <effect>
+                        <Glow />
+                     </effect>
                   </Label>
-                  <Label alignment="CENTER_RIGHT" layoutY="22.0" prefHeight="18.0" prefWidth="59.0" text="PC:" textFill="#a98dd3">
+                  <Label fx:id="pcLabel" alignment="TOP_RIGHT" contentDisplay="TOP" layoutY="22.0" prefHeight="18.0" prefWidth="59.0" text="PC:" textFill="#aa83e4">
                      <font>
                         <Font name="Aldo the Apache" size="20.0" />
                      </font>
+                     <effect>
+                        <Glow />
+                     </effect>
                   </Label>
                </children>
             </Group>
-            <Label fx:id="textInfo" alignment="CENTER" layoutX="-7.0" layoutY="13.0" prefHeight="18.0" prefWidth="256.0" text="press start" textFill="WHITE">
+            <Label fx:id="textInfo" alignment="CENTER" layoutX="-7.0" layoutY="10.0" prefHeight="18.0" prefWidth="256.0" text="press start" textFill="WHITE">
                <font>
-                  <Font name="Aldo the Apache" size="25.0" />
+                  <Font name="Aldo the Apache" size="30.0" />
                </font>
+               <effect>
+                  <Glow />
+               </effect>
             </Label>
             <ImageView fx:id="grid" layoutX="25.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -128,40 +150,63 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
+            <Pane fx:id="symbolPane" disable="true" prefHeight="310.0" prefWidth="240.0" style="-fx-background-color: transparent;" />
+            <ImageView fx:id="diagLine" disable="true" layoutX="23.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/diagLine.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="line" disable="true" layoutX="50.0" layoutY="46.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@res/verLine.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
       <Pane layoutX="240.0" prefHeight="310.0" prefWidth="170.0" style="-fx-background-color: #ffe1d1;">
          <children>
-            <Label alignment="CENTER" layoutX="31.0" layoutY="127.0" prefHeight="17.0" prefWidth="108.0" text="difficulty:" textFill="#352e43">
+            <Label alignment="CENTER" layoutX="12.0" layoutY="128.0" opacity="0.95" prefHeight="20.0" prefWidth="144.0" text="difficulty:" textFill="#352e43">
                <font>
-                  <Font name="Aldo the Apache" size="20.0" />
+                  <Font name="Aldo the Apache" size="23.0" />
                </font>
+               <effect>
+                  <Glow />
+               </effect>
             </Label>
-            <Label fx:id="ease" layoutX="62.0" layoutY="159.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" prefHeight="17.0" prefWidth="108.0" text="EASE" textFill="#352e43">
+            <Label fx:id="ease" layoutX="79.0" layoutY="156.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" opacity="0.75" prefHeight="17.0" prefWidth="108.0" text="EASE" textFill="#352e43">
                <font>
-                  <Font name="Aldo the Apache" size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
-            <Label fx:id="medium" layoutX="62.0" layoutY="184.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" prefHeight="17.0" prefWidth="108.0" text="MEDIUM" textFill="#352e43">
-               <font>
-                  <Font name="Aldo the Apache" size="16.0" />
+                  <Font name="Aldo the Apache" size="18.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <effect>
+                  <Glow />
+               </effect>
             </Label>
-            <Label fx:id="hard" layoutX="62.0" layoutY="210.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" prefHeight="17.0" prefWidth="108.0" text="HARD" textFill="#352e43">
+            <Label fx:id="medium" layoutX="79.0" layoutY="181.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" opacity="0.75" prefHeight="17.0" prefWidth="108.0" text="MEDIUM" textFill="#352e43">
                <font>
-                  <Font name="Aldo the Apache" size="16.0" />
+                  <Font name="Aldo the Apache" size="18.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <effect>
+                  <Glow />
+               </effect>
             </Label>
-            <ImageView fx:id="easeBox" layoutX="30.0" layoutY="158.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <Label fx:id="hard" layoutX="79.0" layoutY="207.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" opacity="0.75" prefHeight="17.0" prefWidth="108.0" text="HARD" textFill="#352e43">
+               <font>
+                  <Font name="Aldo the Apache" size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <effect>
+                  <Glow />
+               </effect>
+            </Label>
+            <ImageView fx:id="easeBox" layoutX="47.0" layoutY="155.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/checkBox.png" />
                </image>
@@ -169,7 +214,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <ImageView fx:id="mediumBox" layoutX="30.0" layoutY="183.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="mediumBox" layoutX="47.0" layoutY="180.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/checkBox.png" />
                </image>
@@ -177,7 +222,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <ImageView fx:id="hardBox" layoutX="30.0" layoutY="208.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="hardBox" layoutX="47.0" layoutY="205.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/checkBox.png" />
                </image>
@@ -185,15 +230,18 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <ImageView fx:id="difficultyCheckPoint" disable="true" layoutX="37.0" layoutY="165.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="difficultyCheckPoint" disable="true" layoutX="54.0" layoutY="162.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/checkIt.png" />
                </image>
             </ImageView>
-            <Label alignment="CENTER" contentDisplay="TEXT_ONLY" ellipsisString="22" graphicTextGap="55.0" layoutX="31.0" layoutY="25.0" lineSpacing="4.0" prefHeight="17.0" prefWidth="108.0" text="your symbol:" textAlignment="CENTER" textFill="#352e43" textOverrun="CENTER_WORD_ELLIPSIS">
+            <Label alignment="CENTER" contentDisplay="TEXT_ONLY" ellipsisString="22" graphicTextGap="55.0" layoutX="9.0" layoutY="22.0" lineSpacing="4.0" opacity="0.95" prefHeight="20.0" prefWidth="158.0" text="your symbol:" textAlignment="CENTER" textFill="#352e43" textOverrun="CENTER_WORD_ELLIPSIS">
                <font>
-                  <Font name="Aldo the Apache" size="20.0" />
+                  <Font name="Aldo the Apache" size="23.0" />
                </font>
+               <effect>
+                  <Glow />
+               </effect>
             </Label>
             <Pane fx:id="oCheckBoxPane" layoutX="90.0" layoutY="50.0">
                <children>
@@ -237,7 +285,7 @@
                   <Rectangle2D />
                </viewport>
             </ImageView>
-            <ImageView fx:id="startBtn" fitHeight="59.0" fitWidth="103.0" layoutX="36.0" layoutY="247.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" onMousePressed="#downListener" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="startBtn" fitHeight="59.0" fitWidth="103.0" layoutX="35.0" layoutY="244.0" onMouseClicked="#clickListener" onMouseEntered="#hoverListener" onMouseExited="#overListener" onMousePressed="#downListener" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@res/startBtn.png" />
                </image>
@@ -245,6 +293,11 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
+            <Text fill="#2f2c201f" layoutX="48.0" layoutY="304.0" opacity="0.75" strokeType="OUTSIDE" strokeWidth="0.0" text="© boneferz 2018" wrappingWidth="137.943359375">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Text>
          </children>
       </Pane>
    </children>
