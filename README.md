@@ -1,3 +1,3 @@
 # TicTacToe
 
-![Screenshot](https://raw.githubusercontent.com/boneferz/TicTacToe/master/Screenshot_4.png)
+![Screenshot](https://raw.githubusercontent.com/boneferz/Snake/master/Screenshot_13.png)
